@@ -32,7 +32,7 @@ function Home() {
 
         <section className="min-h-screen flex flex-col justify-center items-center bg-gray-900 text-white">
           <h2 className="text-4xl font-bold mb-4">Explore Events</h2>
-          <p className="text-lg max-w-2xl text-center">
+          <p className="text-lg max-w-2xl text-center p-4">
             Discover amazing concerts happening near you. From indie bands to global superstars, we've got it all
             covered.
           </p>

@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './components/Home'
 import About from './components/About'
 import ShowFinder from './components/ShowFinder'
+import ShowLister from './components/ShowLister'
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
     {
       path:'FindShows',
       element:<ShowFinder/>
+    },
+    {
+      path:'ListShow',
+      element:<ShowLister/>
     }
   ]
   }

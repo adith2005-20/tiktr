@@ -25,7 +25,7 @@ export default function Footer() {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/" className="hover:underline">
+                                    <Link to="/About" onClick={()=>{scrollTo(0,0)}} className="hover:underline">
                                         About
                                     </Link>
                                 </li>

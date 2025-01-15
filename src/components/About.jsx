@@ -3,8 +3,8 @@ import React from 'react'
 function About() {
   return (
     <>
-    <div className='bg-black text-white font-bold text-6xl p-4 text-center min-h-screen'>
-        About us
+    <div className='bg-black text-white font-semibold text-6xl p-4 text-center min-h-screen'>
+        <span className='font-serif'>About us</span>
         <div className='flex justify-center items-center w-40 h-40 mx-auto mt-20 gap-x-20'>
             
             <img src='aboutPagePerson.webp' className='rounded-full object-cover'/>

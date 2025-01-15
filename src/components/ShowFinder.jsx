@@ -13,35 +13,35 @@ function ShowFinder() {
           title: 'Coldplay Concert',
           date: 'June 25, 2025',
           location: 'Los Angeles, CA',
-          image: 'https://via.placeholder.com/400x300',
+          image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
           price:'199'
         },
         {
           title: 'Jazz Night',
           date: 'July 5, 2025',
           location: 'New Orleans, LA',
-          image: 'https://via.placeholder.com/400x300',
+          image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
           price:'599'
         },
         {
           title: 'Rock Festival',
           date: 'August 10, 2025',
           location: 'Chicago, IL',
-          image: 'https://via.placeholder.com/400x300',
+          image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
           price:'1199'
         },
         {
           title: 'Comedy Night',
           date: 'September 15, 2025',
           location: 'New York, NY',
-          image: 'https://via.placeholder.com/400x300',
+          image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
           price:'99'
         },
         {
           title: 'Indie Music Fest',
           date: 'October 20, 2025',
           location: 'Seattle, WA',
-          image: 'https://via.placeholder.com/400x300',
+          image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
           price:'399'
         },
       ];
@@ -56,12 +56,12 @@ function ShowFinder() {
       />
       <button
         type="button"
-        className="absolute right-0  px-4 py-[9px] text-white bg-blue-500 rounded-r-lg hover:bg-blue-600 focus:outline-none"
+        className="absolute right-0  px-4 py-[9px] text-white bg-orange-700 rounded-r-lg hover:bg-orange-800 focus:outline-none"
       >
         Search
       </button>
     </div>
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto pb-8">
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto pb-8 mt-8 px-4">
         {events.map((event,index)=>(
             <EventCard
             key={index}
