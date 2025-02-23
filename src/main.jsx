@@ -7,6 +7,7 @@ import Home from './components/Home'
 import About from './components/About'
 import ShowFinder from './components/ShowFinder'
 import ShowLister from './components/ShowLister'
+import ConcertDetails from './components/ConcertDetails'
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
     {
       path:'ListShow',
       element:<ShowLister/>
+    },
+    {
+      path:"Concerts/:id",
+      element:<ConcertDetails/>
     }
   ]
   }

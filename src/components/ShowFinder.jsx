@@ -9,42 +9,48 @@ function ShowFinder() {
         console.log(q.target.value)
     }
     const events = [
-        {
-          title: 'Coldplay Concert',
-          date: 'June 25, 2025',
-          location: 'Los Angeles, CA',
-          image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
-          price:'199'
-        },
-        {
-          title: 'Jazz Night',
-          date: 'July 5, 2025',
-          location: 'New Orleans, LA',
-          image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
-          price:'599'
-        },
-        {
-          title: 'Rock Festival',
-          date: 'August 10, 2025',
-          location: 'Chicago, IL',
-          image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
-          price:'1199'
-        },
-        {
-          title: 'Comedy Night',
-          date: 'September 15, 2025',
-          location: 'New York, NY',
-          image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
-          price:'99'
-        },
-        {
-          title: 'Indie Music Fest',
-          date: 'October 20, 2025',
-          location: 'Seattle, WA',
-          image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
-          price:'399'
-        },
-      ];
+      {
+        id: 10001,
+        title: 'Coldplay Concert',
+        date: 'June 25, 2025',
+        location: 'Los Angeles, CA',
+        image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
+        price: '199'
+      },
+      {
+        id: 10002,
+        title: 'Jazz Night',
+        date: 'July 5, 2025',
+        location: 'New Orleans, LA',
+        image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
+        price: '599'
+      },
+      {
+        id: 10003,
+        title: 'Rock Festival',
+        date: 'August 10, 2025',
+        location: 'Chicago, IL',
+        image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
+        price: '1199'
+      },
+      {
+        id: 10004,
+        title: 'Comedy Night',
+        date: 'September 15, 2025',
+        location: 'New York, NY',
+        image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
+        price: '99'
+      },
+      {
+        id: 10005,
+        title: 'Indie Music Fest',
+        date: 'October 20, 2025',
+        location: 'Seattle, WA',
+        image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
+        price: '399'
+      },
+    ];
+    
   return (
     <div className='bg-black'>
     <div className="relative w-full max-w-lg mx-auto p-4 flex">
@@ -70,6 +76,7 @@ function ShowFinder() {
             date={event.date}
             location={event.location}
             price={event.price}
+            concertid={event.id}
             />
         ))}
       </div>
