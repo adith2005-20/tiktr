@@ -20,12 +20,16 @@ export default function Footer() {
                             <h2 className="mb-6 text-sm font-semibold text-gray-300 uppercase">Resources</h2>
                             <ul className="text-gray-200 font-medium">
                                 <li className="mb-4">
-                                    <Link to="/" className="hover:underline">
-                                        Home
+                                <Link 
+                                    to="/" 
+                                    onClick={() => {scrollTo(0, 0)}}
+                                    className="hover:underline"
+                                    >
+                                    Home
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/About" onClick={()=>{scrollTo(0,0)}} className="hover:underline">
+                                    <Link to="/About" onClick={() => {scrollTo(0,0)}} className="hover:underline">
                                         About
                                     </Link>
                                 </li>
@@ -36,7 +40,7 @@ export default function Footer() {
                             <ul className="text-gray-200 font-medium">
                                 <li className="mb-4">
                                     <a
-                                        href="https://github.com/adith2005-20"
+                                        href="https://github.com/7void"
                                         className="hover:underline"
                                         target="_blank"
                                         rel="noreferrer"
@@ -71,9 +75,9 @@ export default function Footer() {
                 <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
                 <div className="sm:flex sm:items-center sm:justify-between">
                     <span className="text-sm text-gray-200 sm:text-center">
-                        © 2025
-                        <a href="https://github.com/adith2005-20" className="hover:underline">
-                            adith2005-20
+                        ©
+                        <a href="https://github.com/7void" className="hover:underline">
+                            2025 tiktr
                         </a>
                         . All Rights Reserved.
                     </span>
@@ -160,4 +164,3 @@ export default function Footer() {
         </footer>
     );
 }
-
