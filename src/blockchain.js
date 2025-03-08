@@ -1,9 +1,7 @@
 import { ethers } from "ethers";
 
-// Replace with your deployed contract address
-const contractAddress = "0xfC1D73E4D5540317C175f2c5329822df71DeEE5B";
+const contractAddress = "0xab17b4bad18fb3dc7797a86dd7c32b3cdf9c62f7";
 
-// Replace with your ABI JSON array (make sure it’s not wrapped in an extra array)
 const contractABI = [
 	{
 		"inputs": [

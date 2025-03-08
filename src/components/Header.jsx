@@ -10,24 +10,29 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
 
-  // Check if wallet is already connected on mount
+  // Poll for connected wallet every 250ms
   useEffect(() => {
-    async function checkWalletConnection() {
+    const interval = setInterval(() => {
       if (window.ethereum) {
-        try {
-          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-          if (accounts.length > 0) {
-            setWalletAddress(accounts[0]);
-          }
-        } catch (error) {
-          console.error('Error checking wallet connection:', error);
-        }
+        window.ethereum
+          .request({ method: 'eth_accounts' })
+          .then((accounts) => {
+            if (accounts.length > 0) {
+              setWalletAddress(accounts[0]);
+            } else {
+              setWalletAddress('');
+            }
+          })
+          .catch((error) => {
+            console.error('Error checking wallet connection:', error);
+          });
       }
-    }
-    checkWalletConnection();
+    }, 250);
+
+    return () => clearInterval(interval);
   }, []);
 
-  // Update header style based on scroll and route
+  // Handle header background on scroll and route
   useEffect(() => {
     if (location.pathname === '/') {
       setIsScrolled(false);
@@ -53,8 +58,7 @@ export default function Header() {
   };
 
   const handleDisconnectWallet = () => {
-    // Clear the wallet state (this doesn't actually disconnect from MetaMask,
-    // but it resets your app's state)
+    // Clear local state
     setWalletAddress('');
     setDropdownOpen(false);
   };
@@ -77,7 +81,7 @@ export default function Header() {
             <img
               src="/tiktrlogo.png"
               className="h-12 scale-75"
-              onClick={() => { scrollTo(0, 0); }}
+              onClick={() => { window.scrollTo(0, 0); }}
               alt="Logo"
             />
           </Link>
@@ -129,7 +133,7 @@ export default function Header() {
                   className={({ isActive }) =>
                     `${isActive ? 'text-orange-400' : 'text-gray-300'} block py-2 pr-4 pl-3 duration-200 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                   }
-                  onClick={() => { scrollTo(0, 0); }}
+                  onClick={() => { window.scrollTo(0, 0); }}
                 >
                   Home
                 </NavLink>
@@ -140,7 +144,7 @@ export default function Header() {
                   className={({ isActive }) =>
                     `${isActive ? 'text-orange-400' : 'text-gray-300'} block py-2 pr-4 pl-3 duration-200 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                   }
-                  onClick={() => { scrollTo(0, 0); }}
+                  onClick={() => { window.scrollTo(0, 0); }}
                 >
                   About
                 </NavLink>
@@ -151,7 +155,7 @@ export default function Header() {
                   className={({ isActive }) =>
                     `${isActive ? 'text-orange-400' : 'text-gray-300'} block py-2 pr-4 pl-3 duration-200 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                   }
-                  onClick={() => { scrollTo(0, 0); }}
+                  onClick={() => { window.scrollTo(0, 0); }}
                 >
                   Find Shows
                 </NavLink>
@@ -162,20 +166,9 @@ export default function Header() {
                   className={({ isActive }) =>
                     `${isActive ? 'text-orange-400' : 'text-gray-300'} block py-2 pr-4 pl-3 duration-200 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                   }
-                  onClick={() => { scrollTo(0, 0); }}
+                  onClick={() => { window.scrollTo(0, 0); }}
                 >
                   List a Show
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/tickets"
-                  className={({ isActive }) =>
-                    `${isActive ? 'text-orange-400' : 'text-gray-300'} block py-2 pr-4 pl-3 duration-200 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
-                  }
-                  onClick={() => { scrollTo(0, 0); }}
-                >
-                  Tickets
                 </NavLink>
               </li>
             </ul>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
@@ -11,12 +11,15 @@ function ShowFinder() {
   const [query, setQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const searchqueryfunc = (e) => {
     setQuery(e.target.value);
     console.log(e.target.value);
   };
 
-  // Trending horizontal cards
   const horizontalCards = [
     { id: 1, title: '', image: 'findshowscard1.jpg', link: '#' },
     { id: 2, title: '', image: 'findshowscard2.jpg', link: '#' },
@@ -50,27 +53,31 @@ function ShowFinder() {
   };
 
   // Events data
+  // ... inside your ShowFinder.jsx file, in the events array:
   const events = [
     {
       title: 'Coldplay Concert',
       date: 'June 25, 2025',
       location: 'Mumbai, IND',
-      image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
-      price: '0.01',
+      image: 'coldplayconcert.jpg',
+      price: '0.016',
+      description: 'Experience an unforgettable night with Coldplay live in concert, featuring mesmerizing light shows and spectacular performances.'
     },
     {
-      title: 'Jazz Night',
+      title: 'Captain America: Brave New World',
       date: 'July 5, 2025',
       location: 'Delhi, IND',
-      image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
-      price: '0.01',
+      image: 'captainamerica.jpg',
+      price: '0.0021',
+      description: 'Join Captain America for an action-packed event that celebrates heroism and adventure.'
     },
     {
-      title: 'Rock Festival',
+      title: 'Interstellar',
       date: 'August 10, 2025',
       location: 'Pune, IND',
-      image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
-      price: '0.01',
+      image: 'findshowscard1.jpg',
+      price: '0.0015',
+      description: 'When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot, Joseph Cooper, is tasked to pilot a spacecraft, along with a team of researchers, to find a new planet for humans.'
     },
     {
       title: 'Comedy Night',
@@ -78,6 +85,7 @@ function ShowFinder() {
       location: 'Kolkata, IND',
       image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
       price: '0.01',
+      description: 'Laugh out loud with top comedians at a night filled with humor, fun, and surprises.'
     },
     {
       title: 'Indie Music Fest',
@@ -85,8 +93,10 @@ function ShowFinder() {
       location: 'Chennai, IND',
       image: 'https://habs.uq.edu.au/files/2777/concert-crowd.jpg',
       price: '0.01',
+      description: 'Enjoy the eclectic sounds of indie music and discover new artists at the Indie Music Fest.'
     },
   ];
+
 
   return (
     <div className="bg-gradient-to-b from-black to-gray-800 pt-[100px]">
@@ -104,7 +114,6 @@ function ShowFinder() {
         }
       `}</style>
 
-      {/* Trending Header */}
       <h1 className="text-orange-200 text-opacity-90 text-2xl font-bold drop-shadow-lg leading-snug text-center pb-8 pt-4">
         <span className="inline-flex items-center">
           <svg
