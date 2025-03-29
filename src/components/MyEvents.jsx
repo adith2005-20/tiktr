@@ -102,7 +102,7 @@ function MyEvents() {
 
   // Function to open QR modal with ticket details
   const openQrModal = (ticket) => {
-    const qrData = `http://localhost:5173/use-ticket?tokenId=${ticket.tokenId}&eventId=${ticket.eventId}`;
+    const qrData = `http://tiktr.vercel.app/use-ticket?tokenId=${ticket.tokenId}&eventId=${ticket.eventId}`;
 
     // Parse the event details if we have them
     const ev = eventMap[ticket.eventId];
