@@ -8,7 +8,7 @@ function UseTicket() {
   const navigate = useNavigate();
   const tokenId = searchParams.get("tokenId");
   const eventId = searchParams.get("eventId");
-  const burnType = searchParams.get("burnType"); // "guard" if a guard is calling the burn function
+  const burnType = searchParams.get("burnType"); 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -25,8 +25,8 @@ function UseTicket() {
       const contract = getContractInstance(signer);
       let tx;
       if (burnType === "guard") {
-        // Call the guardBurnTicket function (ensure your contract implements this)
-        tx = await contract.guardBurnTicket(tokenId);
+        // Call the burnTicketByGuard function for authorized gatekeepers
+        tx = await contract.burnTicketByGuard(tokenId);
       } else {
         // Normal ticket burning by the ticket owner
         tx = await contract.useTicket(tokenId);
