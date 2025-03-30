@@ -106,7 +106,7 @@ function MyEvents() {
   const openQrModal = (ticket) => {
     // Construct a URL that your mobile interface (or burn ticket page) can use.
     // Replace with your actual endpoint as needed.
-    const qrData = `http://tiktr.vercel.app/use-ticket?tokenId=${ticket.tokenId}&eventId=${ticket.eventId}`;
+    const qrData = `http://tiktr.vercel-seven.app/use-ticket?tokenId=${ticket.tokenId}&eventId=${ticket.eventId}`;
 
     const ev = eventMap[ticket.eventId];
     let parsed = null;

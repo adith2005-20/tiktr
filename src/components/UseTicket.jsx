@@ -25,10 +25,10 @@ function UseTicket() {
       const contract = getContractInstance(signer);
       let tx;
       if (burnType === "guard") {
-        // Call the burnTicketByGuard function for authorized gatekeepers
+        // Call the guard-specific burn function.
         tx = await contract.burnTicketByGuard(tokenId);
       } else {
-        // Normal ticket burning by the ticket owner
+        // Normal ticket burning by the ticket owner.
         tx = await contract.useTicket(tokenId);
       }
       await tx.wait();

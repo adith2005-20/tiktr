@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
-import { createEvent, connectWallet, uploadFileToIPFS } from "../blockchain";
+import { createEvent, connectWallet, uploadFileToIPFS, getContractInstance, authorizeGuardForEvent } from "../blockchain";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -15,7 +15,7 @@ function ShowLister() {
     description: "",
     maxTickets: "",
   });
-  // New state for guard addresses (comma separated)
+  // State for guard addresses (comma separated)
   const [guardAddresses, setGuardAddresses] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
@@ -29,7 +29,7 @@ function ShowLister() {
     });
   };
 
-  // New handler for guard addresses
+  // Handler for guard addresses
   const handleGuardChange = (e) => {
     setGuardAddresses(e.target.value);
   };
@@ -225,21 +225,30 @@ function ShowLister() {
         setUploadedImageUrl(imageUrl);
       }
 
-      // Include guard addresses in the metadata URI as an extra parameter (if provided)
-      const guardsParam = guardAddresses ? `&guards=${encodeURIComponent(guardAddresses)}` : "";
-      // Build metadata URI using a placeholder IPFS hash and query parameters
+      // Build metadata URI (guard addresses are included only as metadata here)
       const metadataURI = `https://ipfs.io/ipfs/bafkreie7otemlkqhhemy2ul7z2bcgrdm3v4l4n7ewmyul7rnpt3nchqljy?title=${encodeURIComponent(
         formData.title
-      )}&desc=${encodeURIComponent(
-        formData.description
-      )}&date=${encodeURIComponent(
+      )}&desc=${encodeURIComponent(formData.description)}&date=${encodeURIComponent(
         formData.date
-      )}&location=${encodeURIComponent(
-        formData.location
-      )}&image=${encodeURIComponent(imageUrl)}${guardsParam}`;
+      )}&location=${encodeURIComponent(formData.location)}&image=${encodeURIComponent(imageUrl)}`;
 
+      // Create the event on the blockchain
       const eventId = await createEvent(signer, metadataURI, ticketPriceWei, formData.maxTickets);
       toast.success("Event listed successfully! Event ID: " + eventId);
+
+      // If guard addresses were provided, authorize each for the newly created event.
+      if (guardAddresses) {
+        const contract = getContractInstance(signer);
+        const guards = guardAddresses
+          .split(",")
+          .map((addr) => addr.trim())
+          .filter((addr) => addr !== "");
+        for (const guard of guards) {
+          const tx = await contract.authorizeGuardForEvent(eventId, guard, true);
+          await tx.wait();
+          toast.success("Authorized guard: " + guard);
+        }
+      }
 
       // Reset form and step
       setFormData({
