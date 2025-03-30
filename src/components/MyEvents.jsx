@@ -34,7 +34,7 @@ function MyEvents() {
   const [qrModal, setQrModal] = useState({
     open: false,
     qrData: "",
-    eventDetails: null, 
+    eventDetails: null,
   });
 
   useEffect(() => {
@@ -48,7 +48,7 @@ function MyEvents() {
         const contract = getContractInstance(signer);
         const ids = await getAllEventIds(signer);
 
-
+        // Fetch details for each event from the contract
         const allEvents = await Promise.all(
           ids.map(async (id) => {
             const ev = await contract.events(id);
@@ -63,9 +63,11 @@ function MyEvents() {
           })
         );
 
+        // Filter events that the user created
         const createdEvents = allEvents.filter((ev) => ev.creator === address);
         setMyCreatedEvents(createdEvents);
 
+        // Build a lookup map for events by eventId
         const eMap = {};
         for (const ev of allEvents) {
           eMap[ev.id] = ev;
@@ -79,7 +81,7 @@ function MyEvents() {
           try {
             const owner = await contract.ownerOf(tokenId);
             if (owner.toLowerCase() === address) {
-              // The contract should have a tokenEventId(tokenId) function
+              // Assumes your contract exposes tokenEventId(tokenId)
               const eventId = await contract.tokenEventId(tokenId);
               ownedTickets.push({
                 eventId: eventId.toString(),
@@ -102,9 +104,10 @@ function MyEvents() {
 
   // Function to open QR modal with ticket details
   const openQrModal = (ticket) => {
-    const qrData = `http://localhost:5173/use-ticket?tokenId=${ticket.tokenId}&eventId=${ticket.eventId}`;
+    // Construct a URL that your mobile interface (or burn ticket page) can use.
+    // Replace with your actual endpoint as needed.
+    const qrData = `http://yourdomain.com/use-ticket?tokenId=${ticket.tokenId}&eventId=${ticket.eventId}`;
 
-    // Parse the event details if we have them
     const ev = eventMap[ticket.eventId];
     let parsed = null;
     if (ev) {
@@ -114,7 +117,7 @@ function MyEvents() {
     setQrModal({
       open: true,
       qrData,
-      eventDetails: parsed, // store the parsed metadata
+      eventDetails: parsed || { title: "No Details", date: "N/A", location: "N/A" },
     });
   };
 
@@ -124,7 +127,7 @@ function MyEvents() {
   };
 
   return (
-    <div className="min-h-screen bg-black/90 pt-20 p-8 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-black to-gray-800 pt-20 p-8 text-white">
       <h1 className="text-4xl font-bold mb-8 text-center pt-6">My Events</h1>
 
       {loading ? (
@@ -213,7 +216,7 @@ function MyEvents() {
       {/* QR Code Modal */}
       {qrModal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-          <div className="relative bg-gray-900 p-6 rounded-lg shadow-lg flex items-center space-x-6">
+          <div className="relative bg-gray-900 p-6 rounded-lg shadow-lg flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-6">
             <button
               onClick={closeQrModal}
               className="absolute top-2 right-2 bg-orange-700 hover:bg-orange-600 text-white font-bold py-1 px-2 rounded"
@@ -223,7 +226,7 @@ function MyEvents() {
             <div className="p-4 bg-white rounded">
               <QRCode value={qrModal.qrData} size={200} bgColor="#090909" fgColor="#ffffff" />
             </div>
-            {/* Event Details */}
+            {/* Event Details next to QR code */}
             {qrModal.eventDetails && (
               <div className="text-white">
                 <h2 className="text-2xl font-bold mb-2">{qrModal.eventDetails.title}</h2>

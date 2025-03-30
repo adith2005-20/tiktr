@@ -1,4 +1,3 @@
-// src/components/UseTicket.jsx
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { connectWallet, getContractInstance } from "../blockchain";
@@ -9,6 +8,7 @@ function UseTicket() {
   const navigate = useNavigate();
   const tokenId = searchParams.get("tokenId");
   const eventId = searchParams.get("eventId");
+  const burnType = searchParams.get("burnType"); // "guard" if a guard is calling the burn function
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -23,8 +23,14 @@ function UseTicket() {
     try {
       const signer = await connectWallet();
       const contract = getContractInstance(signer);
-      // the useTicket function is built into the contract and it burns the ticket 
-      const tx = await contract.useTicket(tokenId);
+      let tx;
+      if (burnType === "guard") {
+        // Call the guardBurnTicket function (ensure your contract implements this)
+        tx = await contract.guardBurnTicket(tokenId);
+      } else {
+        // Normal ticket burning by the ticket owner
+        tx = await contract.useTicket(tokenId);
+      }
       await tx.wait();
       setMessage("Ticket burned successfully!");
     } catch (error) {

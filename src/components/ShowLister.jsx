@@ -15,17 +15,23 @@ function ShowLister() {
     description: "",
     maxTickets: "",
   });
+  // New state for guard addresses (comma separated)
+  const [guardAddresses, setGuardAddresses] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
   const [previewImage, setPreviewImage] = useState("");
   const [loading, setLoading] = useState(false);
-
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  // New handler for guard addresses
+  const handleGuardChange = (e) => {
+    setGuardAddresses(e.target.value);
   };
 
   const handleFileChange = (e) => {
@@ -75,7 +81,6 @@ function ShowLister() {
                 className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 required
               />
-
               <style>{`
                 input[type="date"]::-webkit-calendar-picker-indicator {
                   filter: invert(1);
@@ -185,6 +190,23 @@ function ShowLister() {
             ></textarea>
           </div>
         );
+      case 5:
+        return (
+          <div>
+            <label htmlFor="guards" className="block text-white font-medium mb-2">
+              Authorized Guard Addresses
+            </label>
+            <input
+              type="text"
+              name="guards"
+              id="guards"
+              value={guardAddresses}
+              onChange={handleGuardChange}
+              placeholder="Enter comma-separated guard addresses (optional)"
+              className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          </div>
+        );
       default:
         return null;
     }
@@ -203,7 +225,9 @@ function ShowLister() {
         setUploadedImageUrl(imageUrl);
       }
 
-      // Build the metadata URI using a placeholder IPFS hash with query parameters.
+      // Include guard addresses in the metadata URI as an extra parameter (if provided)
+      const guardsParam = guardAddresses ? `&guards=${encodeURIComponent(guardAddresses)}` : "";
+      // Build metadata URI using a placeholder IPFS hash and query parameters
       const metadataURI = `https://ipfs.io/ipfs/bafkreie7otemlkqhhemy2ul7z2bcgrdm3v4l4n7ewmyul7rnpt3nchqljy?title=${encodeURIComponent(
         formData.title
       )}&desc=${encodeURIComponent(
@@ -212,18 +236,12 @@ function ShowLister() {
         formData.date
       )}&location=${encodeURIComponent(
         formData.location
-      )}&image=${encodeURIComponent(imageUrl)}`;
+      )}&image=${encodeURIComponent(imageUrl)}${guardsParam}`;
 
-      const eventId = await createEvent(
-        signer,
-        metadataURI,
-        ticketPriceWei,
-        formData.maxTickets
-      );
-
+      const eventId = await createEvent(signer, metadataURI, ticketPriceWei, formData.maxTickets);
       toast.success("Event listed successfully! Event ID: " + eventId);
 
-      // Reset the form and step
+      // Reset form and step
       setFormData({
         title: "",
         date: "",
@@ -235,6 +253,7 @@ function ShowLister() {
       setImageFile(null);
       setUploadedImageUrl("");
       setPreviewImage("");
+      setGuardAddresses("");
       setStep(1);
       navigate("/findshows");
     } catch (error) {
@@ -267,7 +286,7 @@ function ShowLister() {
                   Back
                 </button>
               )}
-              {step < 4 && (
+              {step < 5 && (
                 <button
                   type="button"
                   onClick={nextStep}
@@ -276,7 +295,7 @@ function ShowLister() {
                   Next
                 </button>
               )}
-              {step === 4 && (
+              {step === 5 && (
                 <button
                   type="submit"
                   disabled={loading}
