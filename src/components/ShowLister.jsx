@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
-import { createEvent, connectWallet, uploadFileToIPFS, getContractInstance, authorizeGuardForEvent } from "../blockchain";
+import { createEvent, connectWallet, uploadFileToIPFS, getContractInstance } from "../blockchain";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -14,6 +14,7 @@ function ShowLister() {
     price: "",
     description: "",
     maxTickets: "",
+    eventType: "", // New field for event type
   });
   // State for guard addresses (comma separated)
   const [guardAddresses, setGuardAddresses] = useState("");
@@ -64,7 +65,7 @@ function ShowLister() {
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="E.g., Coldplay Concert"
-                className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2"
                 required
               />
             </div>
@@ -78,7 +79,7 @@ function ShowLister() {
                 id="date"
                 value={formData.date}
                 onChange={handleChange}
-                className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2"
                 required
               />
               <style>{`
@@ -98,7 +99,22 @@ function ShowLister() {
                 value={formData.location}
                 onChange={handleChange}
                 placeholder="E.g., Madison Square Garden"
-                className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="eventType" className="block text-white font-medium mb-2">
+                Event Type
+              </label>
+              <input
+                type="text"
+                name="eventType"
+                id="eventType"
+                value={formData.eventType}
+                onChange={handleChange}
+                placeholder="E.g., Concert, Sports, Movie"
+                className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2"
                 required
               />
             </div>
@@ -117,7 +133,7 @@ function ShowLister() {
                 id="imageFile"
                 accept="image/*"
                 onChange={handleFileChange}
-                className="w-full bg-gray-700 text-white border border-gray-500 rounded px-3 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full bg-gray-700 text-white border border-gray-500 rounded px-3 py-2 cursor-pointer"
                 required
               />
             </div>
@@ -150,7 +166,7 @@ function ShowLister() {
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="E.g., 0.01"
-                className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2"
                 step="any"
                 required
               />
@@ -166,7 +182,7 @@ function ShowLister() {
                 value={formData.maxTickets}
                 onChange={handleChange}
                 placeholder="E.g., 100"
-                className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2"
                 required
               />
             </div>
@@ -185,7 +201,7 @@ function ShowLister() {
               onChange={handleChange}
               placeholder="Tell us about your event..."
               rows="4"
-              className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2"
               required
             ></textarea>
           </div>
@@ -203,7 +219,7 @@ function ShowLister() {
               value={guardAddresses}
               onChange={handleGuardChange}
               placeholder="Enter comma-separated guard addresses (optional)"
-              className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full bg-transparent text-white border border-gray-500 rounded px-3 py-2"
             />
           </div>
         );
@@ -225,15 +241,21 @@ function ShowLister() {
         setUploadedImageUrl(imageUrl);
       }
 
-      // Build metadata URI (guard addresses are included only as metadata here)
+      // Build metadata URI (guard addresses are included as metadata if needed)
       const metadataURI = `https://ipfs.io/ipfs/bafkreie7otemlkqhhemy2ul7z2bcgrdm3v4l4n7ewmyul7rnpt3nchqljy?title=${encodeURIComponent(
         formData.title
       )}&desc=${encodeURIComponent(formData.description)}&date=${encodeURIComponent(
         formData.date
       )}&location=${encodeURIComponent(formData.location)}&image=${encodeURIComponent(imageUrl)}`;
 
-      // Create the event on the blockchain
-      const eventId = await createEvent(signer, metadataURI, ticketPriceWei, formData.maxTickets);
+      // Create the event on the blockchain (pass eventType as an extra argument)
+      const eventId = await createEvent(
+        signer,
+        metadataURI,
+        ticketPriceWei,
+        formData.maxTickets,
+        formData.eventType  // New argument for event type
+      );
       toast.success("Event listed successfully! Event ID: " + eventId);
 
       // If guard addresses were provided, authorize each for the newly created event.
@@ -258,6 +280,7 @@ function ShowLister() {
         price: "",
         description: "",
         maxTickets: "",
+        eventType: "", // Reset event type
       });
       setImageFile(null);
       setUploadedImageUrl("");
@@ -282,7 +305,7 @@ function ShowLister() {
           {/* Left Column: Multistep Form */}
           <form
             onSubmit={handleSubmit}
-            className="bg-black/40 rounded-lg shadow-lg p-8 space-y-6 transform transition duration-200 hover:shadow-2xl"
+            className="bg-black/40 rounded-lg shadow-lg p-8 space-y-6"
           >
             {renderStep()}
             <div className="flex justify-between">
@@ -290,7 +313,7 @@ function ShowLister() {
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="bg-gray-700 text-white font-medium py-2 px-4 rounded hover:bg-gray-600 transition-colors"
+                  className="bg-gray-700 text-white font-medium py-2 px-4 rounded hover:bg-gray-600"
                 >
                   Back
                 </button>
@@ -299,7 +322,7 @@ function ShowLister() {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="ml-auto bg-orange-700 text-white font-medium py-2 px-4 rounded hover:bg-orange-800 transition-colors"
+                  className="ml-auto bg-orange-700 text-white font-medium py-2 px-4 rounded hover:bg-orange-800"
                 >
                   Next
                 </button>
@@ -308,7 +331,7 @@ function ShowLister() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="ml-auto bg-orange-700 text-white font-bold py-2 px-6 rounded hover:bg-orange-800 transition-colors"
+                  className="ml-auto bg-orange-700 text-white font-bold py-2 px-6 rounded"
                 >
                   {loading ? "Listing Event..." : "List Event"}
                 </button>
@@ -319,7 +342,7 @@ function ShowLister() {
           {/* Right Column: Live Preview */}
           <div className="flex flex-col justify-center items-center text-white space-y-4">
             <h2 className="text-2xl font-bold mb-2">Live Preview</h2>
-            <div className="bg-gray-800 w-full max-w-sm rounded-lg shadow-lg p-4 transition duration-200 hover:shadow-2xl">
+            <div className="bg-gray-800 w-full max-w-sm rounded-lg shadow-lg p-4">
               <div className="overflow-hidden rounded-lg mb-4">
                 {previewImage ? (
                   <img
@@ -341,6 +364,9 @@ function ShowLister() {
               </p>
               <p className="text-gray-400 text-sm mb-1">
                 📍 {formData.location || "Location TBD"}
+              </p>
+              <p className="text-gray-400 text-sm mb-1">
+                Type: {formData.eventType || "N/A"}
               </p>
               <p className="text-gray-400 text-sm mb-3">
                 Price: {formData.price || "0.0"} ETH

@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Slider from 'react-slick';
+import React, { useState, useEffect, useRef } from "react";
+import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
-import { motion } from 'framer-motion';
-import { Search, TrendingUp as TrendingUpIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import EventCard from './EventCard';
-import { connectWallet, getContractInstance, getAllEventIds } from '../blockchain';
-import { ethers } from 'ethers';
+import { motion } from "framer-motion";
+import { Search, TrendingUp as TrendingUpIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+import EventCard from "./EventCard";
+import { connectWallet, getContractInstance, getAllEventIds } from "../blockchain";
+import { ethers } from "ethers";
 
+// Helper function to parse metadata from metadataURI query parameters,
+// now also extracting eventType.
 function parseMetadata(metadataURI) {
   try {
     const url = new URL(metadataURI);
@@ -17,7 +19,8 @@ function parseMetadata(metadataURI) {
       desc: url.searchParams.get("desc") || "No Description",
       date: url.searchParams.get("date") || "N/A",
       location: url.searchParams.get("location") || "N/A",
-      image: url.searchParams.get("image") || ""
+      image: url.searchParams.get("image") || "",
+      eventType: url.searchParams.get("eventType") || ""  // New field for event type
     };
   } catch (error) {
     return {
@@ -25,7 +28,8 @@ function parseMetadata(metadataURI) {
       desc: "No Description",
       date: "N/A",
       location: "N/A",
-      image: ""
+      image: "",
+      eventType: ""
     };
   }
 }
@@ -33,25 +37,10 @@ function parseMetadata(metadataURI) {
 function ShowFinder() {
   const [query, setQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  // On chain events
   const [onChainEvents, setOnChainEvents] = useState([]);
   const [loadingEvents, setLoadingEvents] = useState(false);
-
-  // Pagination
-  const eventsPerPage = 6; 
-  const [visibleCount, setVisibleCount] = useState(eventsPerPage);
+  const [visibleCount, setVisibleCount] = useState(6);
   const loadMoreRef = useRef(null);
-
-
-  const horizontalCards = [
-    { id: 1, title: '', image: 'findshowscard1.jpg', link: '#' },
-    { id: 2, title: '', image: 'findshowscard2.jpg', link: '#' },
-    { id: 3, title: '', image: 'findshowscard3.jpg', link: '#' },
-    { id: 4, title: '', image: 'findshowscard4.jpg', link: '#' },
-    { id: 5, title: '', image: 'findshowscard5.jpg', link: '#' },
-    { id: 6, title: '', image: 'findshowscard6.jpg', link: '#' },
-  ];
 
   // Fetch on-chain events on mount
   useEffect(() => {
@@ -60,10 +49,7 @@ function ShowFinder() {
       try {
         const signer = await connectWallet();
         const contract = getContractInstance(signer);
-
         const ids = await getAllEventIds(signer);
-
-        // Fetch each event's details
         const eventsArr = await Promise.all(
           ids.map(async (id) => {
             const ev = await contract.events(id);
@@ -91,14 +77,14 @@ function ShowFinder() {
   }, []);
 
   useEffect(() => {
-    setVisibleCount(eventsPerPage);
+    setVisibleCount(6);
   }, [query]);
 
   const searchqueryfunc = (e) => {
     setQuery(e.target.value);
   };
 
-  // Filter the onChainEvents by searching metadataURI
+  // Filter events based on metadataURI search
   const filteredEvents = onChainEvents.filter(event =>
     event.metadataURI.toLowerCase().includes(query.toLowerCase())
   );
@@ -108,7 +94,7 @@ function ShowFinder() {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && visibleCount < filteredEvents.length) {
-          setVisibleCount(prev => prev + eventsPerPage);
+          setVisibleCount(prev => prev + 6);
         }
       },
       { threshold: 0.1 }
@@ -121,9 +107,9 @@ function ShowFinder() {
         observer.unobserve(loadMoreRef.current);
       }
     };
-  }, [loadMoreRef, filteredEvents, visibleCount, eventsPerPage]);
+  }, [loadMoreRef, filteredEvents, visibleCount]);
 
-  // Carousel settings
+  // Carousel settings for horizontal cards
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -147,6 +133,15 @@ function ShowFinder() {
     ],
   };
 
+  const horizontalCards = [
+    { id: 1, title: '', image: 'findshowscard1.jpg', link: '#' },
+    { id: 2, title: '', image: 'findshowscard2.jpg', link: '#' },
+    { id: 3, title: '', image: 'findshowscard3.jpg', link: '#' },
+    { id: 4, title: '', image: 'findshowscard4.jpg', link: '#' },
+    { id: 5, title: '', image: 'findshowscard5.jpg', link: '#' },
+    { id: 6, title: '', image: 'findshowscard6.jpg', link: '#' },
+  ];
+
   return (
     <div className="bg-black/90 pt-[100px]">
       <style>{`
@@ -162,7 +157,7 @@ function ShowFinder() {
         }
       `}</style>
 
-      <h1 className="text-white text-4xl font-bold drop-shadow-lg leading-snug ml-20 pt-4 pb-4">
+      <h1 className="text-white text-4xl font-bold drop-shadow-lg ml-20 pt-4 pb-4">
         <span className="flex items-center gap-2">
           Now Trending
           <TrendingUpIcon className="w-8 h-8" />
@@ -241,7 +236,7 @@ function ShowFinder() {
             currentEvents.map((event, index) => {
               // Parse metadata from the event's metadataURI
               const metadata = parseMetadata(event.metadataURI);
-              const { title, date, location, image } = metadata;
+              const { title, date, location, image, eventType } = metadata;
               return (
                 <Link key={index} to="/tickets" state={{ event }}>
                   <EventCard
@@ -250,6 +245,7 @@ function ShowFinder() {
                     date={date || "N/A"}
                     location={location || "N/A"}
                     price={ethers.formatEther(event.ticketPrice)}
+                    eventType={eventType}  // Pass eventType to EventCard
                   />
                 </Link>
               );

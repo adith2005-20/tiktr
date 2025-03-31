@@ -13,14 +13,16 @@ function parseMetadata(metadataURI) {
       title: url.searchParams.get("title") || "No Title",
       date: url.searchParams.get("date") || "N/A",
       location: url.searchParams.get("location") || "N/A",
-      image: url.searchParams.get("image") || ""
+      image: url.searchParams.get("image") || "",
+      eventType: url.searchParams.get("eventType") || "" // New field for event type
     };
   } catch (error) {
     return {
       title: "No Title",
       date: "N/A",
       location: "N/A",
-      image: ""
+      image: "",
+      eventType: ""
     };
   }
 }
@@ -117,7 +119,7 @@ function MyEvents() {
     setQrModal({
       open: true,
       qrData,
-      eventDetails: parsed || { title: "No Details", date: "N/A", location: "N/A" },
+      eventDetails: parsed || { title: "No Details", date: "N/A", location: "N/A", eventType: "" },
     });
   };
 
@@ -151,6 +153,7 @@ function MyEvents() {
                         date={meta.date}
                         location={meta.location}
                         price={ethers.formatEther(event.ticketPrice)}
+                        eventType={meta.eventType} // Pass event type to EventCard
                       />
                     </Link>
                   );
@@ -191,6 +194,9 @@ function MyEvents() {
                         <h2 className="text-xl font-bold mb-2">{meta.title}</h2>
                         <p className="text-gray-400 mb-1">📅 {meta.date}</p>
                         <p className="text-gray-400 mb-1">📍 {meta.location}</p>
+                        {meta.eventType && (
+                          <p className="text-gray-400 mb-1">Type: {meta.eventType}</p>
+                        )}
                         <p className="text-gray-400 mb-2">Ticket ID: {ticket.tokenId}</p>
                         <div className="flex items-center justify-between">
                           <p className="text-orange-500 font-semibold">
@@ -232,6 +238,9 @@ function MyEvents() {
                 <h2 className="text-2xl font-bold mb-2">{qrModal.eventDetails.title}</h2>
                 <p className="text-gray-400 mb-1">📅 {qrModal.eventDetails.date}</p>
                 <p className="text-gray-400 mb-1">📍 {qrModal.eventDetails.location}</p>
+                {qrModal.eventDetails.eventType && (
+                  <p className="text-gray-400 mb-1">Type: {qrModal.eventDetails.eventType}</p>
+                )}
               </div>
             )}
           </div>
