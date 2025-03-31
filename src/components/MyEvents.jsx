@@ -108,7 +108,7 @@ function MyEvents() {
   const openQrModal = (ticket) => {
     // Construct a URL that your mobile interface (or burn ticket page) can use.
     // Replace with your actual endpoint as needed.
-    const qrData = `http://tiktr.vercel-seven.app/use-ticket?tokenId=${ticket.tokenId}&eventId=${ticket.eventId}`;
+    const qrData = `https://verifytiktr.adith.me/use-ticket?tokenId=${ticket.tokenId}&eventId=${ticket.eventId}&burnType=guard`;
 
     const ev = eventMap[ticket.eventId];
     let parsed = null;
@@ -123,7 +123,6 @@ function MyEvents() {
     });
   };
 
-  // Function to close QR modal
   const closeQrModal = () => {
     setQrModal({ open: false, qrData: "", eventDetails: null });
   };
