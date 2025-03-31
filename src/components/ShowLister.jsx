@@ -242,11 +242,8 @@ function ShowLister() {
       }
 
       // Build metadata URI (guard addresses are included as metadata if needed)
-      const metadataURI = `https://ipfs.io/ipfs/bafkreie7otemlkqhhemy2ul7z2bcgrdm3v4l4n7ewmyul7rnpt3nchqljy?title=${encodeURIComponent(
-        formData.title
-      )}&desc=${encodeURIComponent(formData.description)}&date=${encodeURIComponent(
-        formData.date
-      )}&location=${encodeURIComponent(formData.location)}&image=${encodeURIComponent(imageUrl)}`;
+      const metadataURI = `https://ipfs.io/ipfs/bafkreie7otemlkqhhemy2ul7z2bcgrdm3v4l4n7ewmyul7rnpt3nchqljy?title=${encodeURIComponent(formData.title)}&desc=${encodeURIComponent(formData.description)}&date=${encodeURIComponent(formData.date)}&location=${encodeURIComponent(formData.location)}&image=${encodeURIComponent(imageUrl)}&eventType=${encodeURIComponent(formData.eventType)}`;
+
 
       // Create the event on the blockchain (pass eventType as an extra argument)
       const eventId = await createEvent(
