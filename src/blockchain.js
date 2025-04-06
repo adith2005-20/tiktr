@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import axios from "axios";
 
-const contractAddress = "0xcabe839e007da417acb15d7736a2c5b5ad257091";
+const contractAddress = "0x48ca1a26869604b29abbe61416d311da007bdde3";
 
 
 const contractABI = [
